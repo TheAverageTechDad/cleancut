@@ -27,7 +27,7 @@ The window has an Original/Clean A/B player (press Space to play or pause) that 
 
 ## Requirements
 
-- macOS 15 or later (Apple silicon recommended)
+- macOS 15 or later on Apple silicon
 - Xcode 26 or later to build
 - Models download from Hugging Face the first time you use them, then stay cached: Clear ~9 MB, Voz ~470 MB, Parakeet ~600 MB
 
@@ -38,6 +38,12 @@ open Cleancut.xcodeproj
 ```
 
 Then press Run. The project is generated from `project.yml`. After changing it, run `xcodegen generate` ([XcodeGen](https://github.com/yonaskolb/XcodeGen)).
+
+To install a Release build in `/Applications` (`ARCHS=arm64` is required: the Desert Ant SDK doesn't compile for Intel, and Release builds for Intel too by default):
+
+```bash
+xcodebuild -scheme Cleancut -configuration Release -derivedDataPath build ARCHS=arm64 && cp -R build/Build/Products/Release/Cleancut.app /Applications/
+```
 
 Tests: `xcodebuild test -scheme Cleancut -destination 'platform=macOS'`
 
