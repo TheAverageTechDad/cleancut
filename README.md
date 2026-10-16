@@ -1,4 +1,4 @@
-# Cleancut
+<p align="center"><img src="docs/logo.png" alt="Cleancut" width="420"></p>
 
 A tiny macOS app for YouTube voiceovers recorded on a laptop mic. Drop an audio or video file and Cleancut:
 

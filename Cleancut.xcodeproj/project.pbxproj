@@ -15,6 +15,7 @@
 		8113245C61483FCE82E810B1 /* Transcript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60FABCD81431AFF7851B4F7F /* Transcript.swift */; };
 		BCEA24FCAA77A993EFAD8AF2 /* Clear in Frameworks */ = {isa = PBXBuildFile; productRef = 4969426CAA668EAA9CFA02C1 /* Clear */; };
 		CDCE9275E9440D0C2F157FD9 /* TranscriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71C9912C95C0C929179AE53 /* TranscriptTests.swift */; };
+		FF39ED26AE50DF3826D83346 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E596F17EB10C90262AE0974 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,6 +31,7 @@
 /* Begin PBXFileReference section */
 		0BD44C5BA2C8388BABAD71ED /* CleancutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleancutApp.swift; sourceTree = "<group>"; };
 		416303A7F840E672990A8817 /* Cleancut.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cleancut.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E596F17EB10C90262AE0974 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D2B2E016D99AD0FE4153B43 /* Job.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Job.swift; sourceTree = "<group>"; };
 		60FABCD81431AFF7851B4F7F /* Transcript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transcript.swift; sourceTree = "<group>"; };
 		7ECED4C4A9C76D3B0C087451 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -55,6 +57,7 @@
 		1646DD1540B94B8CACBC7D24 /* Cleancut */ = {
 			isa = PBXGroup;
 			children = (
+				4E596F17EB10C90262AE0974 /* Assets.xcassets */,
 				0BD44C5BA2C8388BABAD71ED /* CleancutApp.swift */,
 				7ECED4C4A9C76D3B0C087451 /* Info.plist */,
 				5D2B2E016D99AD0FE4153B43 /* Job.swift */,
@@ -181,6 +184,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF39ED26AE50DF3826D83346 /* Assets.xcassets in Resources */,
 				67BB7EBBF8A8D1A9C6D3FB18 /* hook.cache.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
