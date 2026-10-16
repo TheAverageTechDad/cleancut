@@ -1,0 +1,51 @@
+name: Cleancut
+options:
+  bundleIdPrefix: com.cleancut
+  deploymentTarget:
+    macOS: "15.0"
+packages:
+  DesertAnt:
+    url: https://github.com/Desert-Ant-Labs/desert-ant-core.git
+    from: 3.6.0
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  Cleancut:
+    type: application
+    platform: macOS
+    sources: [Cleancut]
+    dependencies:
+      - package: DesertAnt
+        product: Clear
+      - package: DesertAnt
+        product: Voz
+    info:
+      path: Cleancut/Info.plist
+      properties:
+        CFBundleDisplayName: Cleancut
+        LSApplicationCategoryType: public.app-category.video
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.cleancut.app
+        GENERATE_INFOPLIST_FILE: YES
+        ENABLE_APP_SANDBOX: NO # ponytail: writes outputs next to the dropped file; sandbox would need folder access prompts
+        CODE_SIGN_IDENTITY: "-"
+  CleancutTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: [CleancutTests]
+    dependencies:
+      - target: Cleancut
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  Cleancut:
+    build:
+      targets:
+        Cleancut: all
+    test:
+      targets: [CleancutTests]
