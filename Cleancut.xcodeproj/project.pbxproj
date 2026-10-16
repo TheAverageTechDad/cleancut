@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0BAD972040F12A2685B7F506 /* FluidAudio in Frameworks */ = {isa = PBXBuildFile; productRef = 6AE7FBDD71450DC892FBF013 /* FluidAudio */; };
 		36B01E58C70F5087C786C253 /* Job.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B2E016D99AD0FE4153B43 /* Job.swift */; };
 		5BD81C1D061601818C05D824 /* Voz in Frameworks */ = {isa = PBXBuildFile; productRef = 2020900B961D44B197B16E5E /* Voz */; };
 		67BB7EBBF8A8D1A9C6D3FB18 /* hook.cache.json in Resources */ = {isa = PBXBuildFile; fileRef = 977D8DFE062F3986E1DAE08A /* hook.cache.json */; };
@@ -44,6 +45,7 @@
 			files = (
 				BCEA24FCAA77A993EFAD8AF2 /* Clear in Frameworks */,
 				5BD81C1D061601818C05D824 /* Voz in Frameworks */,
+				0BAD972040F12A2685B7F506 /* FluidAudio in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,6 +117,7 @@
 			packageProductDependencies = (
 				4969426CAA668EAA9CFA02C1 /* Clear */,
 				2020900B961D44B197B16E5E /* Voz */,
+				6AE7FBDD71450DC892FBF013 /* FluidAudio */,
 			);
 			productName = Cleancut;
 			productReference = 416303A7F840E672990A8817 /* Cleancut.app */;
@@ -160,6 +163,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				13D2F9CA7BF20F4404A7E0B9 /* XCRemoteSwiftPackageReference "desert-ant-core" */,
+				6CA9D60C3F580C0B97E413D1 /* XCRemoteSwiftPackageReference "FluidAudio" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FEC55ECEA40AF311412EAB75 /* Products */;
@@ -447,6 +451,14 @@
 				minimumVersion = 3.6.0;
 			};
 		};
+		6CA9D60C3F580C0B97E413D1 /* XCRemoteSwiftPackageReference "FluidAudio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/FluidInference/FluidAudio.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.17.7;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -459,6 +471,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 13D2F9CA7BF20F4404A7E0B9 /* XCRemoteSwiftPackageReference "desert-ant-core" */;
 			productName = Clear;
+		};
+		6AE7FBDD71450DC892FBF013 /* FluidAudio */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CA9D60C3F580C0B97E413D1 /* XCRemoteSwiftPackageReference "FluidAudio" */;
+			productName = FluidAudio;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

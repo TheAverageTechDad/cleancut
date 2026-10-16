@@ -1,5 +1,6 @@
 import AVFoundation
 import Clear
+import FluidAudio
 import Observation
 import Voz
 
@@ -13,6 +14,12 @@ final class Job {
         case failed(String)
     }
 
+    enum Engine: String, CaseIterable, Identifiable {
+        case voz = "Voz"
+        case parakeet = "Parakeet"
+        var id: Self { self }
+    }
+
     var stage: Stage = .idle
     var source: URL?
     var cleaned: URL?
@@ -20,6 +27,7 @@ final class Job {
 
     private let clear = Clear(variant: .clearStudio)
     private var voz: Voz?
+    private var parakeet: AsrManager?
     private var step = UUID()
 
     var isWorking: Bool {
@@ -27,14 +35,14 @@ final class Job {
     }
 
     /// Callers don't start a new run while one is working.
-    func run(_ url: URL) {
+    func run(_ url: URL, engine: Engine) {
         source = url
         cleaned = nil
         lines = []
-        Task { await process(url) }
+        Task { await process(url, engine: engine) }
     }
 
-    private func process(_ source: URL) async {
+    private func process(_ source: URL, engine: Engine) async {
         let base = source.deletingPathExtension()
         let cleaned = base.appendingPathExtension("clean.wav")
         do {
@@ -43,24 +51,47 @@ final class Job {
                                     options: .init(mastering: .youtube)) { cleaning($0.phase == .enhancing ? $0.fraction : 0) }
             self.cleaned = cleaned
 
-            if !Voz.isDownloaded() {
-                let downloading = begin("Downloading speech model (first run only, ~470 MB)")
-                try await Voz.download { downloading($0.fraction) }
+            let words = switch engine {
+            case .voz: try await transcribeWithVoz(cleaned)
+            case .parakeet: try await transcribeWithParakeet(cleaned)
             }
-            if voz == nil {
-                _ = begin("Loading speech model")
-                voz = try await Voz()
-            }
-            let transcribing = begin("Transcribing")
-            let result = try await voz!.transcribe(cleaned) { transcribing($0.fractionCompleted) }
-
-            lines = Transcript.lines(from: result.words.map { Segment(start: $0.start, end: $0.end, text: $0.text) })
+            lines = Transcript.lines(from: words)
             try Transcript.text(lines).write(to: base.appendingPathExtension("transcript.txt"), atomically: true, encoding: .utf8)
             try Transcript.srt(lines).write(to: base.appendingPathExtension("transcript.srt"), atomically: true, encoding: .utf8)
             stage = .done
         } catch {
             stage = .failed(error.localizedDescription)
         }
+    }
+
+    private func transcribeWithVoz(_ url: URL) async throws -> [Segment] {
+        if !Voz.isDownloaded() {
+            let downloading = begin("Downloading Voz (first run only, ~470 MB)")
+            try await Voz.download { downloading($0.fraction) }
+        }
+        if voz == nil {
+            _ = begin("Loading Voz")
+            voz = try await Voz()
+        }
+        let transcribing = begin("Transcribing")
+        let result = try await voz!.transcribe(url) { transcribing($0.fractionCompleted) }
+        return result.words.map { Segment(start: $0.start, end: $0.end, text: $0.text) }
+    }
+
+    private func transcribeWithParakeet(_ url: URL) async throws -> [Segment] {
+        if parakeet == nil {
+            let loading = begin("Loading Parakeet (first run downloads ~600 MB)")
+            // v2 is the English-only model, better recall than multilingual v3
+            let models = try await AsrModels.downloadAndLoad(version: .v2) { loading($0.fractionCompleted) }
+            let manager = AsrManager()
+            try await manager.loadModels(models)
+            parakeet = manager
+        }
+        _ = begin("Transcribing")
+        var state = TdtDecoderState.make(decoderLayers: await parakeet!.decoderLayerCount)
+        let result = try await parakeet!.transcribe(url, decoderState: &state)
+        return buildWordTimings(from: result.tokenTimings ?? [])
+            .map { Segment(start: $0.startTime, end: $0.endTime, text: $0.word) }
     }
 
     /// Starts a new progress step. Late callbacks from an earlier step are dropped.

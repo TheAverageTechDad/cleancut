@@ -3,7 +3,7 @@
 A tiny macOS app for YouTube voiceovers recorded on a laptop mic. Drop an audio or video file and Cleancut:
 
 1. **Cleans the voice** with [Desert Ant Clear](https://desertant.com/docs/clear/) (Studio voice, mastered to YouTube's −14 LUFS).
-2. **Transcribes** the clean audio with [Desert Ant Voz](https://desertant.com/docs/voz/), with timestamps.
+2. **Transcribes** the clean audio with timestamps, using your pick of [Desert Ant Voz](https://desertant.com/docs/voz/) or NVIDIA Parakeet (English, via [FluidAudio](https://github.com/FluidInference/FluidAudio)).
 3. **Copy for AI** puts the transcript and a chapters prompt on your clipboard. Paste it into any AI and you get YouTube chapters back.
 
 Everything runs on-device. Nothing is uploaded.
@@ -24,7 +24,7 @@ The window has an Original/Clean A/B player (press Space to play or pause) that 
 
 - macOS 15 or later (Apple silicon recommended)
 - Xcode 26 or later to build
-- About 480 MB of models, downloaded from Hugging Face on first run and cached afterwards
+- Models download from Hugging Face the first time you use them, then stay cached: Clear ~9 MB, Voz ~470 MB, Parakeet ~600 MB
 
 ## Build
 
@@ -42,4 +42,4 @@ Audio and transcripts never leave your Mac. The Desert Ant SDK's usage reporting
 
 ## License
 
-Cleancut is MIT. The Desert Ant SDK and models are under the [Desert Ant Labs Source-Available License](https://github.com/Desert-Ant-Labs/desert-ant-core), free up to 100k monthly active devices.
+Cleancut is MIT. FluidAudio is Apache-2.0, and Parakeet's weights are CC-BY-4.0. The Desert Ant SDK and models are under the [Desert Ant Labs Source-Available License](https://github.com/Desert-Ant-Labs/desert-ant-core), free up to 100k monthly active devices.

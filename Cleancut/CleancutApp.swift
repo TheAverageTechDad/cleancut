@@ -18,6 +18,7 @@ struct ContentView: View {
     @State private var choosing = false
     @State private var copied = false
     @State private var targeted = false
+    @AppStorage("engine") private var engine = Job.Engine.voz
 
     var body: some View {
         Group {
@@ -51,6 +52,7 @@ struct ContentView: View {
             Text("Cleans the voice, then writes a timestamped transcript next to the file.")
                 .foregroundStyle(.secondary)
             Button("Choose File…") { choosing = true }.keyboardShortcut("o")
+            enginePicker.padding(.top, 8)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
@@ -95,6 +97,7 @@ struct ContentView: View {
                 Text(job.source?.lastPathComponent ?? "").font(.headline)
                     .lineLimit(1).truncationMode(.middle)
                 Spacer()
+                enginePicker
                 Button("New File…") { choosing = true }.keyboardShortcut("o")
             }
             playerBar
@@ -119,6 +122,14 @@ struct ContentView: View {
             }
         }
         .padding()
+    }
+
+    private var enginePicker: some View {
+        Picker("Transcribe with", selection: $engine) {
+            ForEach(Job.Engine.allCases) { Text($0.rawValue).tag($0) }
+        }
+        .pickerStyle(.segmented).fixedSize()
+        .help("Voz: Desert Ant, ~470 MB. Parakeet: NVIDIA via FluidAudio, ~600 MB, English.")
     }
 
     private var playerBar: some View {
@@ -146,7 +157,7 @@ struct ContentView: View {
 
     private func start(_ url: URL) {
         player.pause()
-        job.run(url)
+        job.run(url, engine: engine)
     }
 
     private func copy() {

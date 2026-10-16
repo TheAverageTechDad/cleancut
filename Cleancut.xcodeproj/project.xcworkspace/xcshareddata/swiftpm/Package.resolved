@@ -1,5 +1,5 @@
 {
-  "originHash" : "c34e7fd6cb67000c193fbcf9a87d657b5846a1a8786db4d27c3bc76d343f5af1",
+  "originHash" : "20d15fa06f8f0cd7f6a7cf5d4ec64ae767339486eb13a324a6951ac5dd2334f9",
   "pins" : [
     {
       "identity" : "desert-ant-core",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "c50d20d299bfb44fbed57555b9b9937ddc9b88a8",
         "version" : "3.6.0"
+      }
+    },
+    {
+      "identity" : "fluidaudio",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/FluidInference/FluidAudio.git",
+      "state" : {
+        "revision" : "503b4bd1bbf7220882de39fe8ae6716aae4132da",
+        "version" : "0.17.7"
       }
     },
     {
