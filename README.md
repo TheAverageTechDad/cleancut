@@ -1,4 +1,9 @@
-<p align="center"><img src="docs/logo.png" alt="Cleancut" width="420"></p>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo-dark-bg.png">
+    <img src="docs/logo.png" alt="Cleancut" width="420">
+  </picture>
+</p>
 
 A tiny macOS app for YouTube voiceovers recorded on a laptop mic. Drop an audio or video file and Cleancut:
 
