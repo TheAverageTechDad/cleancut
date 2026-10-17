@@ -19,6 +19,8 @@ struct ContentView: View {
     @State private var copied = false
     @State private var targeted = false
     @AppStorage("engine") private var engine = Job.Engine.voz
+    @AppStorage("voice") private var voice = Job.Voice.studio
+    @State private var deleteError: String?
 
     var body: some View {
         Group {
@@ -38,6 +40,8 @@ struct ContentView: View {
         .fileImporter(isPresented: $choosing, allowedContentTypes: [.audiovisualContent]) { result in
             if case .success(let url) = result { start(url) }
         }
+        .alert("Couldn't delete outputs", isPresented: Binding(get: { deleteError != nil }, set: { if !$0 { deleteError = nil } })) {
+        } message: { Text(deleteError ?? "") }
         .onChange(of: job.stage) { _, stage in
             if stage == .done, let source = job.source, let cleaned = job.cleaned {
                 player.load(original: source, clean: cleaned)
@@ -52,7 +56,7 @@ struct ContentView: View {
             Text("Cleans the voice, then writes a timestamped transcript next to the file.")
                 .foregroundStyle(.secondary)
             Button("Choose File…") { choosing = true }.keyboardShortcut("o")
-            enginePicker.padding(.top, 8)
+            settings.padding(.top, 8)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
@@ -97,8 +101,21 @@ struct ContentView: View {
                 Text(job.source?.lastPathComponent ?? "").font(.headline)
                     .lineLimit(1).truncationMode(.middle)
                 Spacer()
-                enginePicker
                 Button("New File…") { choosing = true }.keyboardShortcut("o")
+            }
+            HStack {
+                settings
+                Spacer()
+                Button("Reprocess", systemImage: "arrow.clockwise") {
+                    if let source = job.source { start(source) }
+                }
+                .keyboardShortcut("r")
+                .help("Run this file again with the voice and transcriber selected on the left")
+                Button("Delete Outputs", systemImage: "trash", role: .destructive) {
+                    player.pause()
+                    do { try job.deleteOutputs() } catch { deleteError = error.localizedDescription }
+                }
+                .help("Move the .clean.wav, .transcript.txt and .transcript.srt to the Trash")
             }
             playerBar
             ScrollView {
@@ -124,12 +141,19 @@ struct ContentView: View {
         .padding()
     }
 
-    private var enginePicker: some View {
-        Picker("Transcribe with", selection: $engine) {
-            ForEach(Job.Engine.allCases) { Text($0.rawValue).tag($0) }
+    private var settings: some View {
+        HStack(spacing: 16) {
+            Picker("Voice", selection: $voice) {
+                ForEach(Job.Voice.allCases) { Text($0.rawValue).tag($0) }
+            }
+            .pickerStyle(.segmented).fixedSize()
+            .help("Studio: quiet, polished, near-silent gaps. Natural: keeps room tone and breaths.")
+            Picker("Transcriber", selection: $engine) {
+                ForEach(Job.Engine.allCases) { Text($0.rawValue).tag($0) }
+            }
+            .pickerStyle(.segmented).fixedSize()
+            .help("Voz: Desert Ant, ~470 MB. Parakeet: NVIDIA via FluidAudio, ~600 MB, English.")
         }
-        .pickerStyle(.segmented).fixedSize()
-        .help("Voz: Desert Ant, ~470 MB. Parakeet: NVIDIA via FluidAudio, ~600 MB, English.")
     }
 
     private var playerBar: some View {
@@ -157,7 +181,7 @@ struct ContentView: View {
 
     private func start(_ url: URL) {
         player.pause()
-        job.run(url, engine: engine)
+        job.run(url, engine: engine, voice: voice)
     }
 
     private func copy() {

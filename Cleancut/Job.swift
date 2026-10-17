@@ -20,12 +20,19 @@ final class Job {
         var id: Self { self }
     }
 
+    enum Voice: String, CaseIterable, Identifiable {
+        case studio = "Studio"
+        case natural = "Natural"
+        var id: Self { self }
+        var variant: ModelVariant { self == .studio ? .clearStudio : .clearNatural }
+    }
+
     var stage: Stage = .idle
     var source: URL?
     var cleaned: URL?
     var lines: [Segment] = []
 
-    private let clear = Clear(variant: .clearStudio)
+    private var clears: [Voice: Clear] = [:]
     private var voz: Voz?
     private var parakeet: AsrManager?
     private var step = UUID()
@@ -35,18 +42,38 @@ final class Job {
     }
 
     /// Callers don't start a new run while one is working.
-    func run(_ url: URL, engine: Engine) {
+    func run(_ url: URL, engine: Engine, voice: Voice) {
         source = url
         cleaned = nil
         lines = []
-        Task { await process(url, engine: engine) }
+        Task { await process(url, engine: engine, voice: voice) }
     }
 
-    private func process(_ source: URL, engine: Engine) async {
+    /// Moves this file's outputs to the Trash and goes back to the drop zone.
+    func deleteOutputs() throws {
+        guard let source else { return }
+        for url in Self.outputs(for: source) where FileManager.default.fileExists(atPath: url.path) {
+            try FileManager.default.trashItem(at: url, resultingItemURL: nil)
+        }
+        self.source = nil
+        cleaned = nil
+        lines = []
+        stage = .idle
+    }
+
+    /// The clean WAV, the .txt and the .srt written next to `source`.
+    nonisolated static func outputs(for source: URL) -> [URL] {
+        let base = source.deletingPathExtension()
+        return ["clean.wav", "transcript.txt", "transcript.srt"].map { base.appendingPathExtension($0) }
+    }
+
+    private func process(_ source: URL, engine: Engine, voice: Voice) async {
         let base = source.deletingPathExtension()
         let cleaned = base.appendingPathExtension("clean.wav")
         do {
-            let cleaning = begin("Cleaning audio")
+            let cleaning = begin("Cleaning audio (\(voice.rawValue))")
+            let clear = clears[voice] ?? Clear(variant: voice.variant)
+            clears[voice] = clear
             try await clear.enhance(path: source.path, to: cleaned.path,
                                     options: .init(mastering: .youtube)) { cleaning($0.phase == .enhancing ? $0.fraction : 0) }
             self.cleaned = cleaned

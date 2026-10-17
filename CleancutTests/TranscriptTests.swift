@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 @testable import Cleancut
 
@@ -24,4 +25,11 @@ import Testing
     #expect(Transcript.clock(3723) == "1:02:03")
     #expect(Transcript.text([Segment(start: 65, end: 70, text: "Hi")]) == "[1:05] Hi\n")
     #expect(Transcript.srt([Segment(start: 1.5, end: 3723.25, text: "Hi")]) == "1\n00:00:01,500 --> 01:02:03,250\nHi\n")
+}
+
+@Test func outputsNeverIncludeTheSource() {
+    for name in ["a.mov", "a.wav", "a.clean.wav", "a.transcript.txt"] {
+        let source = URL(fileURLWithPath: "/tmp/\(name)")
+        #expect(!Job.outputs(for: source).contains(source))
+    }
 }
