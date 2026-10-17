@@ -7,7 +7,7 @@
 
 A tiny macOS app for YouTube voiceovers recorded on a laptop mic. Drop an audio or video file and Cleancut:
 
-1. **Cleans the voice** with [Desert Ant Clear](https://desertant.com/docs/clear/), mastered to YouTube's −14 LUFS. Pick **Studio** (quiet, polished) or **Natural** (keeps room tone and breaths).
+1. **Cleans the voice** with [Desert Ant Clear](https://desertant.com/docs/clear/) at 80% strength, mastered toward YouTube's −14 LUFS (no extra compression). Pick **Studio** (quiet, polished) or **Natural** (keeps room tone and breaths).
 2. **Transcribes** the clean audio with timestamps, using your pick of [Desert Ant Voz](https://desertant.com/docs/voz/) or NVIDIA Parakeet (English, via [FluidAudio](https://github.com/FluidInference/FluidAudio)).
 3. **Copy for AI** puts the transcript and a chapters prompt on your clipboard. Paste it into any AI and you get YouTube chapters back.
 

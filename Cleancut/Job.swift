@@ -75,7 +75,8 @@ final class Job {
             let clear = clears[voice] ?? Clear(variant: voice.variant)
             clears[voice] = clear
             try await clear.enhance(path: source.path, to: cleaned.path,
-                                    options: .init(mastering: .youtube)) { cleaning($0.phase == .enhancing ? $0.fraction : 0) }
+                                    // 80%: indistinguishable from full in a listening test, less risk of warbly artifacts
+                                    options: .init(strength: 0.8, mastering: .youtube)) { cleaning($0.phase == .enhancing ? $0.fraction : 0) }
             self.cleaned = cleaned
 
             let words = switch engine {
